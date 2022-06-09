@@ -1,3 +1,4 @@
+import 'package:esgi_flutter/screens/app/home/note.dart';
 import 'package:flutter/material.dart';
 
 class HomePage extends StatefulWidget {
@@ -9,13 +10,20 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  int _counter = 0;
-
-  void _incrementCounter() {
-    setState(() {
-      _counter++;
-    });
-  }
+  List<Note> notes = [
+    Note(
+        title: 'Note 1',
+        date: '09/06/2022',
+        content: 'Un contenu',
+        image:
+            'https://thumbs.dreamstime.com/b/fond-de-coeur-d-amour-d-arc-en-ciel-60045149.jpg'),
+    Note(
+        title: 'Note 2',
+        date: '08/06/2022',
+        content: 'Un deuxième contenu',
+        image:
+            'https://thumbs.dreamstime.com/b/fond-de-coeur-d-amour-d-arc-en-ciel-60045149.jpg'),
+  ];
 
   @override
   Widget build(BuildContext context) {
@@ -114,6 +122,14 @@ class _HomePageState extends State<HomePage> {
                 textAlign: TextAlign.left,
               ),
             ),
+            Container(
+                height: 140,
+                child: ListView.separated(
+                  itemCount: notes.length,
+                  separatorBuilder: (context, _) => SizedBox(width: 12),
+                  itemBuilder: (context, index) =>
+                      buildNote(note: notes[index], context: context),
+                )),
           ],
         ),
       ),
@@ -121,3 +137,18 @@ class _HomePageState extends State<HomePage> {
   }
 }
 // TODO Implement this library.
+
+Widget buildNote({required Note note, required BuildContext context}) =>
+    Container(
+      child: Column(
+        children: [
+          Text(note.title),
+          Text(note.date),
+          Text(note.content),
+          Ink.image(
+            image: NetworkImage(note.image),
+            fit: BoxFit.cover,
+          ),
+        ],
+      ),
+    );
