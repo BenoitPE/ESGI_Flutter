@@ -1,3 +1,4 @@
+import 'package:esgi_flutter/screens/app/details/details_screen.dart';
 import 'package:esgi_flutter/screens/app/home/note.dart';
 import 'package:flutter/material.dart';
 
@@ -12,17 +13,17 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   List<Note> notes = [
     Note(
-        title: 'Note 1',
-        date: '09/06/2022',
-        content: 'Un contenu',
-        image:
-            'https://thumbs.dreamstime.com/b/fond-de-coeur-d-amour-d-arc-en-ciel-60045149.jpg'),
+        title: 'Cours Flutter #1',
+        date: '23-07-2021',
+        content:
+            "Flutter est un kit de développement logiciel (SDK) d'interface utilisateur open-source créé par Google. Il est utilisé pour développer des applications pour Android, iOS, Linux, Mac, Windows, Google Fuchsia et le web à partir d'une seule base de code.",
+        image: 'assets/images/flutter.png'),
     Note(
-        title: 'Note 2',
-        date: '08/06/2022',
-        content: 'Un deuxième contenu',
-        image:
-            'https://thumbs.dreamstime.com/b/fond-de-coeur-d-amour-d-arc-en-ciel-60045149.jpg'),
+        title: 'Cours Philo #34',
+        date: '23-07-2021',
+        content:
+            "La première version de Flutter était connue sous le nom de code Sky et fonctionnait sur le système d'exploitation Android. Elle a été dévoilée lors du sommet des développeurs Dart de 2015, avec l'intention déclarée de pouvoir effectuer un rendu cohérent à 120 images par seconde",
+        image: 'assets/images/flutter2.png'),
   ];
 
   @override
@@ -123,7 +124,7 @@ class _HomePageState extends State<HomePage> {
               ),
             ),
             Container(
-                height: 140,
+                height: 300,
                 child: ListView.separated(
                   itemCount: notes.length,
                   separatorBuilder: (context, _) => SizedBox(width: 12),
@@ -139,16 +140,53 @@ class _HomePageState extends State<HomePage> {
 // TODO Implement this library.
 
 Widget buildNote({required Note note, required BuildContext context}) =>
-    Container(
-      child: Column(
-        children: [
-          Text(note.title),
-          Text(note.date),
-          Text(note.content),
-          Ink.image(
-            image: NetworkImage(note.image),
-            fit: BoxFit.cover,
+    Padding(
+      padding: const EdgeInsets.only(top: 10),
+      child: InkWell(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Text(
+              note.title.toUpperCase(),
+              textAlign: TextAlign.left,
+              style: const TextStyle(
+                fontWeight: FontWeight.bold,
+                fontSize: 20,
+              ),
+            ),
+            Text(
+              note.date,
+              style: const TextStyle(
+                fontWeight: FontWeight.w300,
+                color: Colors.grey,
+                fontSize: 16,
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 15),
+              child: Text(
+                note.content,
+                style: const TextStyle(
+                  color: Color.fromARGB(100, 50, 50, 50),
+                  fontSize: 14,
+                ),
+              ),
+            ),
+            Image(
+              image: AssetImage(note.image),
+            ),
+            const Divider(
+              color: Colors.black,
+            ),
+          ],
+        ),
+        onTap: () => Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => DetailsPage(
+              note: note,
+            ),
           ),
-        ],
+        ),
       ),
     );
