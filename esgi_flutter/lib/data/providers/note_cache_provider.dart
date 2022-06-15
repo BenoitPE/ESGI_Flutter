@@ -24,7 +24,7 @@ class NoteCacheProvider {
 
   Future<Note> insert(Note note) async {
     await initialiseDatabase();
-    var newId = await db!.insert('notes', note.toJson());
+    var newId = await db!.insert('notes', note.toJson(),conflictAlgorithm: ConflictAlgorithm.replace);
     return Note(
         id: newId,
         title: note.title,

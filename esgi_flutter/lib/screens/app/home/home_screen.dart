@@ -2,6 +2,7 @@ import 'package:esgi_flutter/app_routes.dart';
 import 'package:esgi_flutter/data/models/note.dart';
 import 'package:esgi_flutter/data/repository/note_repository.dart';
 import 'package:flutter/material.dart';
+import 'dart:math';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -25,6 +26,10 @@ class _HomeScreenState extends State<HomeScreen> {
     setState(() {});
   }
 
+  int id = Random.secure().nextInt(1000);
+  var title;
+  var content;
+  DateTime today = new DateTime.now();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -55,6 +60,9 @@ class _HomeScreenState extends State<HomeScreen> {
                     TextFormField(
                       minLines: 1,
                       maxLines: 1,
+                      onChanged: (value) {
+                        title = value;
+                      },
                       decoration: const InputDecoration(
                         labelText: 'Titre',
                         enabledBorder: OutlineInputBorder(
@@ -68,6 +76,9 @@ class _HomeScreenState extends State<HomeScreen> {
                       padding: const EdgeInsets.only(top: 25),
                       child: TextFormField(
                         maxLines: 5,
+                        onChanged: (value) {
+                          content = value;
+                        },
                         decoration: const InputDecoration(
                           labelText: 'Contenu',
                           enabledBorder: OutlineInputBorder(
@@ -104,14 +115,28 @@ class _HomeScreenState extends State<HomeScreen> {
                           foregroundColor:
                               MaterialStateProperty.all<Color>(Colors.white),
                         ),
-                        onPressed: () {
-                          _noteRepository.addNote(Note(
-                              id: 3,
-                              title: 'test',
-                              date: '2022-06-15',
-                              content: 'test content',
-                              image: 'assets/images/flutter.png'));
-                        },
+                        onPressed: () => setState(() => {
+                              notes.add(Note(
+                                  id: id,
+                                  title: title,
+                                  date: today.year.toString() +
+                                      '-' +
+                                      today.month.toString() +
+                                      '-' +
+                                      today.day.toString(),
+                                  content: content,
+                                  image: 'assets/images/flutter.png')),
+                              _noteRepository.addNote(Note(
+                                  id: id,
+                                  title: title,
+                                  date: today.year.toString() +
+                                      '-' +
+                                      today.month.toString() +
+                                      '-' +
+                                      today.day.toString(),
+                                  content: content,
+                                  image: 'assets/images/flutter.png')),
+                            }),
                         child: const Text(
                           'AJOUTER MA NOTE',
                           style: TextStyle(fontWeight: FontWeight.bold),
