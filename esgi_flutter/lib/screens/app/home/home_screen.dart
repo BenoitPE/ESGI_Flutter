@@ -1,5 +1,6 @@
 import 'package:esgi_flutter/app_routes.dart';
-import 'package:esgi_flutter/screens/app/models/note.dart';
+import 'package:esgi_flutter/data/models/note.dart';
+import 'package:esgi_flutter/data/repository/note_repository.dart';
 import 'package:flutter/material.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -10,20 +11,19 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  List<Note> notes = [
-    Note(
-        title: 'Cours Flutter #1',
-        date: '23-07-2021',
-        content:
-            "Flutter est un kit de développement logiciel (SDK) d'interface utilisateur open-source créé par Google. Il est utilisé pour développer des applications pour Android, iOS, Linux, Mac, Windows, Google Fuchsia et le web à partir d'une seule base de code.",
-        image: 'assets/images/flutter.png'),
-    Note(
-        title: 'Cours Philo #34',
-        date: '23-07-2021',
-        content:
-            "La première version de Flutter était connue sous le nom de code Sky et fonctionnait sur le système d'exploitation Android. Elle a été dévoilée lors du sommet des développeurs Dart de 2015, avec l'intention déclarée de pouvoir effectuer un rendu cohérent à 120 images par seconde",
-        image: 'assets/images/flutter2.png'),
-  ];
+  final NoteRepository _noteRepository = NoteRepository();
+  List<Note> notes = [];
+
+  @override
+  void initState() {
+    getAllNotes();
+    super.initState();
+  }
+
+  getAllNotes() async {
+    notes = await _noteRepository.getAllNotes();
+    setState(() {});
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -104,7 +104,14 @@ class _HomeScreenState extends State<HomeScreen> {
                           foregroundColor:
                               MaterialStateProperty.all<Color>(Colors.white),
                         ),
-                        onPressed: () {},
+                        onPressed: () {
+                          _noteRepository.addNote(Note(
+                              id: 3,
+                              title: 'test',
+                              date: '2022-06-15',
+                              content: 'test content',
+                              image: 'assets/images/flutter.png'));
+                        },
                         child: const Text(
                           'AJOUTER MA NOTE',
                           style: TextStyle(fontWeight: FontWeight.bold),

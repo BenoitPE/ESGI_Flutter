@@ -5,5 +5,5 @@ const homeRoute = '/home';
 const detailsRoute = '/details';
 
 Map<String, WidgetBuilder> routes = {
-  homeRoute: (context) => const HomeScreen(),
+  homeRoute: (context) => HomeScreen(),
 };
