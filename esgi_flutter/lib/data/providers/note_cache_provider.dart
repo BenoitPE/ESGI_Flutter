@@ -12,8 +12,9 @@ class NoteCacheProvider {
     db = await openDatabase(join(databasePath, 'tpnotes.db'), version: 1,
         onCreate: (Database db, int version) async {
       await db.execute('''
-        create table notes ( 
-        title text primary key, 
+        create table notes (
+        id integer primary key autoincrement,
+        title text not null, 
         date text not null,
         content text not null,
         image text not null)
