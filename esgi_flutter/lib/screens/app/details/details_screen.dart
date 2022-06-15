@@ -1,9 +1,9 @@
-import 'package:esgi_flutter/screens/app/home/note.dart';
+import 'package:esgi_flutter/screens/app/models/note.dart';
 import 'package:flutter/material.dart';
 
-class DetailsPage extends StatelessWidget {
+class DetailsScreen extends StatelessWidget {
   final Note note;
-  const DetailsPage({
+  const DetailsScreen({
     Key? key,
     required this.note,
   }) : super(key: key);
