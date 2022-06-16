@@ -137,24 +137,60 @@ class _HomeScreenState extends State<HomeScreen> {
                           foregroundColor:
                               MaterialStateProperty.all<Color>(Colors.white),
                         ),
-                        onPressed: () => setState(() => {
-                              _noteRepository.addNote(Note(
-                                  id: id,
-                                  title: titleInputController.text,
-                                  date: today.year.toString() +
-                                      '-' +
-                                      today.month.toString() +
-                                      '-' +
-                                      today.day.toString(),
-                                  content: contentInputController.text,
-                                  image: pickedImages.isNotEmpty
-                                      ? pickedImages[0].path
-                                      : "")),
-                              getAllNotes(),
-                              titleInputController.clear(),
-                              contentInputController.clear(),
-                              pickedImages.clear(),
-                            }),
+                        onPressed: () => setState(
+                          () => {
+                            if (titleInputController.text != "" &&
+                                contentInputController.text != "")
+                              {
+                                _noteRepository.addNote(Note(
+                                    id: id,
+                                    title: titleInputController.text,
+                                    date:
+                                        '${today.year}-${today.month}-${today.day}',
+                                    content: contentInputController.text,
+                                    image: pickedImages.isNotEmpty
+                                        ? pickedImages[0].path
+                                        : "")),
+                                getAllNotes(),
+                                titleInputController.clear(),
+                                contentInputController.clear(),
+                                pickedImages.clear(),
+                              }
+                            else
+                              {
+                                showDialog(
+                                  context: context,
+                                  barrierDismissible: false,
+                                  builder: (BuildContext context) {
+                                    return AlertDialog(
+                                      title: Row(
+                                        children: [
+                                          Text((() {
+                                            if (titleInputController.text ==
+                                                    "" &&
+                                                contentInputController.text ==
+                                                    "") {
+                                              return "Veuillez saisir un titre\n et un contenu";
+                                            } else if (titleInputController
+                                                    .text ==
+                                                "") {
+                                              return "Veuillez saisir un titre";
+                                            } else {
+                                              return "Veuillez saisir un contenu";
+                                            }
+                                          })()),
+                                          const CloseButton(),
+                                        ],
+                                      ),
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(20),
+                                      ),
+                                    );
+                                  },
+                                ),
+                              },
+                          },
+                        ),
                         child: const Text(
                           'AJOUTER MA NOTE',
                           style: TextStyle(fontWeight: FontWeight.bold),

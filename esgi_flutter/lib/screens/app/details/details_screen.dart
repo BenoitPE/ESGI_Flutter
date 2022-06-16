@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:esgi_flutter/data/models/note.dart';
 import 'package:flutter/material.dart';
 
@@ -61,9 +63,11 @@ class DetailsScreen extends StatelessWidget {
                   ),
                 ),
               ),
-              Image(
-                image: AssetImage(note.image),
-              ),
+              note.image.isNotEmpty
+                  ? Image.file(
+                      File(note.image),
+                    )
+                  : Container(),
               const Divider(
                 color: Colors.black,
               ),
