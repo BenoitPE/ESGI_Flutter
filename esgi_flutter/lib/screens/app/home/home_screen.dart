@@ -3,6 +3,8 @@ import 'package:esgi_flutter/data/models/note.dart';
 import 'package:esgi_flutter/data/repository/note_repository.dart';
 import 'package:flutter/material.dart';
 import 'dart:math';
+import 'dart:io';
+import 'package:image_picker/image_picker.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -14,6 +16,18 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   final NoteRepository _noteRepository = NoteRepository();
   List<Note> notes = [];
+  List<XFile> pickedImages = [];
+  final titleInputController = TextEditingController();
+  final contentInputController = TextEditingController();
+
+  lunchCamera() async {
+    pickedImages = [];
+    final ImagePicker _picker = ImagePicker();
+    var img = await _picker.pickImage(source: ImageSource.camera);
+    print(img?.path);
+    pickedImages.add(img!);
+    setState(() {});
+  }
 
   @override
   void initState() {
@@ -27,8 +41,6 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   int id = Random.secure().nextInt(1000);
-  var title;
-  var content;
   DateTime today = new DateTime.now();
   @override
   Widget build(BuildContext context) {
@@ -58,11 +70,9 @@ class _HomeScreenState extends State<HomeScreen> {
                       textAlign: TextAlign.left,
                     ),
                     TextFormField(
+                      controller: titleInputController,
                       minLines: 1,
                       maxLines: 1,
-                      onChanged: (value) {
-                        title = value;
-                      },
                       decoration: const InputDecoration(
                         labelText: 'Titre',
                         enabledBorder: OutlineInputBorder(
@@ -75,10 +85,8 @@ class _HomeScreenState extends State<HomeScreen> {
                     Padding(
                       padding: const EdgeInsets.only(top: 25),
                       child: TextFormField(
+                        controller: contentInputController,
                         maxLines: 5,
-                        onChanged: (value) {
-                          content = value;
-                        },
                         decoration: const InputDecoration(
                           labelText: 'Contenu',
                           enabledBorder: OutlineInputBorder(
@@ -91,17 +99,31 @@ class _HomeScreenState extends State<HomeScreen> {
                     ),
                     Padding(
                       padding: const EdgeInsets.only(top: 25.0),
-                      child: TextButton(
-                        style: ButtonStyle(
-                          overlayColor:
-                              MaterialStateProperty.all<Color>(Colors.grey),
-                          backgroundColor:
-                              MaterialStateProperty.all<Color>(Colors.black),
-                          foregroundColor:
-                              MaterialStateProperty.all<Color>(Colors.white),
-                        ),
-                        onPressed: () {},
-                        child: const Text('Ajouter une image'),
+                      child: Row(
+                        children: [
+                          TextButton(
+                            style: ButtonStyle(
+                              overlayColor:
+                                  MaterialStateProperty.all<Color>(Colors.grey),
+                              backgroundColor: MaterialStateProperty.all<Color>(
+                                  Colors.black),
+                              foregroundColor: MaterialStateProperty.all<Color>(
+                                  Colors.white),
+                            ),
+                            onPressed: () {
+                              lunchCamera();
+                            },
+                            child: const Text('Ajouter une image'),
+                          ),
+                          pickedImages.isNotEmpty
+                              ? Container(
+                                  width: 80,
+                                  height: 100,
+                                  padding: const EdgeInsets.all(2.0),
+                                  child: Image.file(File(pickedImages[0].path)),
+                                )
+                              : Container()
+                        ],
                       ),
                     ),
                     Padding(
@@ -116,26 +138,22 @@ class _HomeScreenState extends State<HomeScreen> {
                               MaterialStateProperty.all<Color>(Colors.white),
                         ),
                         onPressed: () => setState(() => {
-                              notes.add(Note(
-                                  id: id,
-                                  title: title,
-                                  date: today.year.toString() +
-                                      '-' +
-                                      today.month.toString() +
-                                      '-' +
-                                      today.day.toString(),
-                                  content: content,
-                                  image: 'assets/images/flutter.png')),
                               _noteRepository.addNote(Note(
                                   id: id,
-                                  title: title,
+                                  title: titleInputController.text,
                                   date: today.year.toString() +
                                       '-' +
                                       today.month.toString() +
                                       '-' +
                                       today.day.toString(),
-                                  content: content,
-                                  image: 'assets/images/flutter.png')),
+                                  content: contentInputController.text,
+                                  image: pickedImages.isNotEmpty
+                                      ? pickedImages[0].path
+                                      : "")),
+                              getAllNotes(),
+                              titleInputController.clear(),
+                              contentInputController.clear(),
+                              pickedImages.clear(),
                             }),
                         child: const Text(
                           'AJOUTER MA NOTE',
@@ -205,9 +223,11 @@ Widget buildNote({required Note note, required BuildContext context}) =>
                   ),
                 ),
               ),
-              Image(
-                image: AssetImage(note.image),
-              ),
+              note.image.isNotEmpty
+                  ? Image.file(
+                      File(note.image),
+                    )
+                  : Container(),
               const Divider(
                 color: Colors.black,
               ),
